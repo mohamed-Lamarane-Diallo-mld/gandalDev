@@ -1,7 +1,7 @@
 # Utilise une image de base qui contient PHP et Composer
 FROM php:8.2-fpm
 
-# Installe les dépendances système requises par PHP et Laravel
+# Installe les dépendances système requises par PHP
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -11,10 +11,11 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libfreetype6-dev \
     zip \
-    curl
+    curl \
+    libsqlite3-dev
 
-# Installe les extensions PHP nécessaires
-RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring zip exif pcntl
+# Installe les extensions PHP nécessaires (uniquement celles pour SQLite, plus d'autres extensions communes)
+RUN docker-php-ext-install pdo_sqlite mbstring zip exif pcntl
 
 # Installe le gestionnaire de paquets Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
