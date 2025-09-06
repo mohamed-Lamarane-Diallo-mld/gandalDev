@@ -1,4 +1,4 @@
-# Étape 1 : Construire l'image PHP
+# Utilise une image de base qui contient PHP et Composer
 FROM php:8.2-fpm as php_fpm
 
 # Installe les dépendances système requises par PHP
@@ -27,6 +27,9 @@ COPY . /var/www/html
 # Exécute Composer
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
+# Exécute les migrations de base de données
+RUN php artisan migrate --force
+
 # Nettoie les caches de l'application
 RUN php artisan config:cache
 RUN php artisan route:cache
@@ -42,7 +45,7 @@ EXPOSE 9000
 CMD ["php-fpm"]
 
 
-# Étape 2 : Configurer Nginx
+# Configure Nginx pour servir l'application
 FROM nginx:1.23-alpine as nginx
 
 # Copie le fichier de configuration Nginx
