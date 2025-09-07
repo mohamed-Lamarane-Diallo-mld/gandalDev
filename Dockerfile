@@ -16,8 +16,8 @@ RUN apt-get update && apt-get install -y \
 # Définir le répertoire de travail
 WORKDIR /var/www/html
 
-# Copier le projet Laravel
-COPY . /var/www/html
+# Copier le projet Laravel entier (sans ajouter un /public)
+COPY . .
 
 # Copier le fichier de configuration Apache personnalisé
 COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
@@ -35,7 +35,7 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 ENV PORT=10000
 EXPOSE 10000
 
-# Configurer Apache pour écouter le port Render
+# Configurer Apache pour écouter le port Render et définir DocumentRoot sur /public
 RUN sed -i "s/80/${PORT}/g" /etc/apache2/ports.conf \
     && sed -i "s|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g" /etc/apache2/sites-available/000-default.conf
 
