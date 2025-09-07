@@ -30,6 +30,8 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN chown -R www-data:www-data storage bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/public
 
+# Modifier la configuration de PHP-FPM
+RUN sed -i 's|listen = /var/run/php-fpm.sock|listen = 9000|' /usr/local/etc/php-fpm.d/www.conf
 
 # Copier configuration nginx et supervisor
 COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
