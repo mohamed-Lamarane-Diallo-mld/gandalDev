@@ -6,12 +6,11 @@ RUN apk add --no-cache \
     nginx \
     git \
     unzip \
-    libzip \
-    libonig \
+    libzip-dev \
+    libonig-dev \
     sqlite-dev \
     zip \
-    curl \
-    libonig-dev
+    curl
 
 # Installe les extensions PHP nécessaires
 RUN docker-php-ext-install pdo_sqlite mbstring zip exif pcntl
