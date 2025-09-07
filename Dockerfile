@@ -34,6 +34,7 @@ RUN chown -R www-data:www-data /var/www/html/public
 RUN sed -i 's|listen = /var/run/php-fpm.sock|listen = 9000|' /usr/local/etc/php-fpm.d/www.conf
 
 # Copier configuration nginx et supervisor
+RUN rm -f /etc/nginx/conf.d/default.conf
 COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./docker/start.sh /start.sh
