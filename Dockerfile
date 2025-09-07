@@ -28,7 +28,7 @@ COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 # Installer les dépendances PHP
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Permissions pour Laravel (storage et cache)
+# Permissions pour Laravel (storage et cache + public)
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public
 
 # Exposer le port que Render utilisera
@@ -38,6 +38,7 @@ EXPOSE 10000
 # Configurer Apache pour écouter le port Render et définir DocumentRoot sur /public
 RUN sed -i "s/80/${PORT}/g" /etc/apache2/ports.conf \
     && sed -i "s|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g" /etc/apache2/sites-available/000-default.conf \
+    && sed -i "s|<Directory /var/www/html>|<Directory /var/www/html/public>|g" /etc/apache2/sites-available/000-default.conf \
     && a2ensite 000-default.conf \
     && a2enmod rewrite
 
