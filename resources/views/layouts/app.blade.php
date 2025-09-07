@@ -8,6 +8,20 @@
     <link rel='icon' type='image/png' href='/favicon.png'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+    <!-- Balises Open Graph pour WhatsApp, Messenger, etc. -->
+    <meta property="og:title" content="@yield('title', 'Mon Portfolio')">
+    <meta property="og:description" content="Découvrez mes projets incroyables et mon portfolio en ligne !">
+    <meta property="og:image" content="{{ asset('images/logo0.png') }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+
+        <!-- Balises Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', 'Mon Portfolio')">
+    <meta name="twitter:description" content="Découvrez mes projets incroyables et mon portfolio en ligne !">
+    <meta name="twitter:image" content="{{ asset('images/logo0.png') }}">
+
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
         * {
