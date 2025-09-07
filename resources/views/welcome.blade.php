@@ -83,7 +83,7 @@
         border-color: #388E3C;
     }
 </style>
-<div class="container-fluid bg-light d-flex align-items-center justify-content-center min-vh-100">
+<div class="container-fluid bg-light d-flex align-items-center justify-content-center min-vh-100 mt-4">
     <div class="card shadow-lg p-4" style="max-width: 900px; width: 100%;">
         <div class="row g-4 align-items-center">
             <div class="col-md-4 text-center">
