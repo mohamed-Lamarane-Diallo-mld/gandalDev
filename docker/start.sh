@@ -1,7 +1,10 @@
 #!/bin/sh
 
-# Démarrer PHP-FPM en arrière-plan
-php-fpm &
+# Migration + cache Laravel
+php artisan migrate --force
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 
-# Démarrer Nginx au premier plan
-nginx -g "daemon off;"
+# Lancer Nginx + PHP-FPM via Supervisor
+exec /usr/bin/supervisord -c /etc/supervisord.conf

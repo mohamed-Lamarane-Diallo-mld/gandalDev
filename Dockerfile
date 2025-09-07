@@ -1,55 +1,42 @@
-# Utilise une image de base qui contient PHP et Composer
 FROM php:8.2-fpm-alpine
 
-# Installe les dépendances système nécessaires pour Alpine Linux
+# Installer dépendances système
 RUN apk add --no-cache \
     nginx \
     git \
     unzip \
-    libzip \
-    libonig \
+    libzip-dev \
+    oniguruma-dev \
     sqlite-dev \
-    zip \
     curl \
-    onig-dev
-# Installe les extensions PHP nécessaires
+    bash \
+    supervisor
+
+# Installer extensions PHP
 RUN docker-php-ext-install pdo_sqlite mbstring zip exif pcntl
 
-# Installe le gestionnaire de paquets Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Installer Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Définit le répertoire de travail
 WORKDIR /var/www/html
 
-# Copie tous les fichiers du projet dans le conteneur
-COPY . /var/www/html
+# Copier projet Laravel
+COPY . .
 
-# Exécute Composer pour installer les dépendances du projet
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+# Installer dépendances PHP
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Exécute les migrations de base de données
-RUN php artisan migrate --force
+# Permissions Laravel
+RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Nettoie les caches de l'application
-RUN php artisan config:cache
-RUN php artisan route:cache
-RUN php artisan view:cache
-
-# Définit les permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Crée un lien symbolique pour le dossier public de Laravel
-RUN ln -s /var/www/html/public /var/www/html/nginx
-
-# Configure Nginx pour servir l'application Laravel
+# Copier config Nginx et Supervisord
 COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./docker/supervisord.conf /etc/supervisord.conf
 
-# Copie le script d'entrée
+# Script de démarrage
 COPY ./docker/start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
-# Expose le port 80
 EXPOSE 80
 
-# Commande par défaut pour démarrer le service
 CMD ["start.sh"]
