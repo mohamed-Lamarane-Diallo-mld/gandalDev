@@ -27,7 +27,7 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Permissions Laravel
-RUN chown -R www-data:www-data storage bootstrap/cache
+
 RUN chown -R www-data:www-data /var/www/html/public
 
 # Modifier la configuration de PHP-FPM
@@ -36,10 +36,12 @@ RUN sed -i 's|listen = /var/run/php-fpm.sock|listen = 9000|' /usr/local/etc/php-
 # Copier configuration nginx et supervisor
 RUN rm -f /etc/nginx/conf.d/default.conf
 COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY ./docker/start.sh /start.sh
-RUN chmod +x /start.sh
+COPY ./docker/supervisord.conf /etc/supervisord.conf
+
+
 
 EXPOSE 80
 
-CMD ["/start.sh"]
+# Démarrer supervisord
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
+
