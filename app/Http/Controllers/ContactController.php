@@ -18,14 +18,14 @@ class ContactController extends Controller
     public function submit(Request $request)
     {
         // Validation
-        $data = $request->validate([
+        $request->validate([
             'name' => 'required|string',
             'email' => 'required|email',
             'message' => 'required|string',
         ]);
         try{
              // Envoyer le mail
-            Mail::to('lama79883@gmail.com')->send(new ContactMail($data));
+            Mail::to('lama79883@gmail.com')->send(new ContactMail($request->all()));
 
             // Indiquer que l'envoi a réussi
             $valid = true;
