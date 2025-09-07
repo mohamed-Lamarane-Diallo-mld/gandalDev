@@ -1,30 +1,30 @@
 # Utilise une image de base qui contient PHP et Composer
-FROM php:8.2-fpm as php_fpm
+FROM php:8.2-fpm-alpine
 
-# Installe les dépendances système requises par PHP
-RUN apt-get update && apt-get install -y \
+# Installe les dépendances système nécessaires
+RUN apk add --no-cache \
+    nginx \
     git \
     unzip \
-    libonig-dev \
     libzip-dev \
+    libonig-dev \
     libsqlite3-dev \
     zip \
-    curl \
-    libonig-dev
+    curl
 
 # Installe les extensions PHP nécessaires
 RUN docker-php-ext-install pdo_sqlite mbstring zip exif pcntl
 
-# Installe Composer
+# Installe le gestionnaire de paquets Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Définit le répertoire de travail
 WORKDIR /var/www/html
 
-# Copie les fichiers du projet
+# Copie tous les fichiers du projet dans le conteneur
 COPY . /var/www/html
 
-# Exécute Composer
+# Exécute Composer pour installer les dépendances du projet
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Exécute les migrations de base de données
@@ -38,21 +38,18 @@ RUN php artisan view:cache
 # Définit les permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose le port pour PHP-FPM
-EXPOSE 9000
+# Crée un lien symbolique pour le dossier public de Laravel
+RUN ln -s /var/www/html/public /var/www/html/nginx
 
-# Commande de démarrage par défaut pour PHP-FPM
-CMD ["php-fpm"]
+# Configure Nginx pour servir l'application Laravel
+COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
+# Copie le script d'entrée
+COPY ./docker/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
 
-# Configure Nginx pour servir l'application
-FROM nginx:1.23-alpine as nginx
-
-# Copie le fichier de configuration Nginx
-COPY --from=php_fpm /var/www/html/docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-
-# Expose le port pour Nginx
+# Expose le port 80
 EXPOSE 80
 
-# Commande de démarrage par défaut pour Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Commande par défaut pour démarrer le service
+CMD ["start.sh"]
