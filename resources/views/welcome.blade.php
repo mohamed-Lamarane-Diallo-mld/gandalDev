@@ -86,7 +86,7 @@
 <div class="container-fluid bg-light d-flex align-items-center justify-content-center min-vh-100 mt-4">
     <div class="card shadow-lg p-4" style="max-width: 900px; width: 100%;">
         <div class="row g-4 align-items-center">
-            <div class="col-md-4 text-center">
+            <div class="col-md-4 text-center pt-4">
                 <div class="profile-image-container mb-3">
                     <img src="/images/moi.png" alt="Mohamed Lamarane diallo" class="img-fluid rounded-circle profile-img">
                 </div>
