@@ -25,7 +25,7 @@ class ContactController extends Controller
         ]);
         try{
              // Envoyer le mail
-            Mail::to('mohamedlamarane.diallo@uadb.edu.sn')->send(new ContactMail($data));
+            Mail::to('lama79883@gmail.com')->send(new ContactMail($data));
 
             // Indiquer que l'envoi a réussi
             $valid = true;
