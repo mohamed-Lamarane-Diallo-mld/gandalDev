@@ -1,9 +1,8 @@
-# Utiliser une image de base PHP avec FPM
-FROM php:8.2-fpm
+# Utiliser PHP 8.2 avec Apache intégré
+FROM php:8.2-apache
 
-# Installer dépendances système
+# Installer dépendances système et PHP nécessaires pour Laravel
 RUN apt-get update && apt-get install -y \
-    nginx \
     git \
     unzip \
     curl \
@@ -11,37 +10,29 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     zip \
-    supervisor \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd \
+    && a2enmod rewrite
+
+# Définir le répertoire de travail
+WORKDIR /var/www/html
+
+# Copier le projet Laravel
+COPY . .
 
 # Installer Composer
 COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 
-# Définir répertoire de travail
-WORKDIR /var/www/html
-
-# Copier projet
-COPY . .
-
-# Installer dépendances PHP
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Permissions Laravel
+# Permissions pour Laravel (storage et cache)
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-RUN chown -R www-data:www-data /var/www/html/public
-
-# Modifier la configuration de PHP-FPM
-RUN sed -i 's|listen = /var/run/php-fpm.sock|listen = 9000|' /usr/local/etc/php-fpm.d/www.conf
-
-# Copier configuration nginx et supervisor
-RUN rm -f /etc/nginx/conf.d/default.conf
-COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY ./docker/supervisord.conf /etc/supervisord.conf
-
-
-
+# Exposer le port que Render utilisera
+ENV PORT=10000
 EXPOSE 10000
 
-# Démarrer supervisord
-CMD ["supervisord", "-c", "/etc/supervisord.conf"]
+# Rediriger Apache pour écouter le port Render
+RUN sed -i "s/80/${PORT}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 
+# Apache démarre automatiquement à l’exécution de l’image
+CMD ["apache2-foreground"]
