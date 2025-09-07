@@ -40,7 +40,7 @@ COPY ./docker/supervisord.conf /etc/supervisord.conf
 
 
 
-EXPOSE 80
+EXPOSE 10000
 
 # Démarrer supervisord
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]
