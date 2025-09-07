@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Valeur par défaut pour Render
+: "${PORT:=8080}"
+
+
 # Migration + cache Laravel
 php artisan migrate --force
 php artisan config:cache
