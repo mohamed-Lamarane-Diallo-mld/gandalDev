@@ -1,16 +1,17 @@
 # Utilise une image de base qui contient PHP et Composer
 FROM php:8.2-fpm-alpine
 
-# Installe les dépendances système nécessaires
+# Installe les dépendances système nécessaires pour Alpine Linux
 RUN apk add --no-cache \
     nginx \
     git \
     unzip \
-    libzip-dev \
-    libonig-dev \
-    libsqlite3-dev \
+    libzip \
+    libonig \
+    sqlite-dev \
     zip \
-    curl
+    curl \
+    libonig-dev
 
 # Installe les extensions PHP nécessaires
 RUN docker-php-ext-install pdo_sqlite mbstring zip exif pcntl
