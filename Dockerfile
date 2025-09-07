@@ -17,9 +17,9 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /var/www/html
 
 # Copier le projet Laravel
-COPY . .
+COPY . /var/www/html
 
-# Copier ton fichier de config Apache personnalisé
+# Copier le fichier de configuration Apache personnalisé
 COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # Installer Composer
@@ -35,7 +35,7 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 ENV PORT=10000
 EXPOSE 10000
 
-# Configurer Apache pour écouter le port Render et définir le DocumentRoot sur /public
+# Configurer Apache pour écouter le port Render
 RUN sed -i "s/80/${PORT}/g" /etc/apache2/ports.conf \
     && sed -i "s|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g" /etc/apache2/sites-available/000-default.conf
 
@@ -45,4 +45,3 @@ RUN a2ensite 000-default.conf \
 
 # Apache démarre automatiquement à l’exécution de l’image
 CMD ["apache2-foreground"]
-# Fin du Dockerfile
