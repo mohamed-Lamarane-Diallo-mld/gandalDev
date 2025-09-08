@@ -11,15 +11,15 @@
     <!-- Balises Open Graph pour WhatsApp, Messenger, etc. -->
     <meta property="og:title" content="@yield('title', 'Mon Portfolio')">
     <meta property="og:description" content="Découvrez mes projets incroyables et mon portfolio en ligne !">
-    <meta property="og:image" content="{{ asset('images/logo0.png') }}">
+    <meta property="og:image" content="https://gandaldevmld.onrender.com/images/moi.png">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
 
-        <!-- Balises Twitter -->
+    <!-- Balises Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('title', 'Mon Portfolio')">
     <meta name="twitter:description" content="Découvrez mes projets incroyables et mon portfolio en ligne !">
-    <meta name="twitter:image" content="{{ asset('images/logo0.png') }}">
+    <meta name="twitter:image" content="https://gandaldevmld.onrender.com/images/moi.png">
 
 
     <style>
